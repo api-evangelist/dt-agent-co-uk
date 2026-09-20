@@ -1,0 +1,103 @@
+generated: '2026-09-19'
+method: probed
+source:
+- https://neva.dt-agent.co.uk/
+format: jsonrpc-2.0
+format_note: >-
+  Not RFC 9457. The endpoint returns JSON-RPC 2.0 error objects over HTTP 200 (transport success, protocol
+  error), so a client must parse the body; only a GET on the root (405) and unknown paths (404 text/plain
+  "Not Found") surface as HTTP-level failures. Validation errors carry a Pydantic-shaped data[] array
+  (type, loc, msg, input, url). There is no published error reference; every entry below was observed live
+  on 2026-09-19 against an anonymous request.
+envelopes:
+- surface: a2a
+  shape: '{jsonrpc: "2.0", id, error: {code, message, data?}}'
+  transport_status: 200
+  note: >-
+    The request id is echoed. data is present only on -32602 parameter errors, as a list of Pydantic
+    field diagnostics. tasks/resubscribe returns the same envelope as a single text/event-stream "data:"
+    frame.
+- surface: http
+  shape: text/plain body
+  transport_status: 404 | 405
+  note: 'GET / returns 405 "Method Not Allowed" with Allow: POST; any other path returns 404 "Not Found".'
+problems:
+- id: jsonrpc-invalid-params
+  surface: a2a
+  jsonrpc_code: -32602
+  http_status: 200
+  message: Invalid parameters
+  observed: true
+  triggers:
+  - message/send without params.message.messageId
+  - message/send whose parts entry lacks a text, file or data field
+  remediation: >-
+    Send a full A2A Message object: role, a client-generated messageId, and parts[] where each part is one
+    of the discriminated union arms - a TextPart {"kind":"text","text":...}, FilePart {"file":...} or DataPart
+    {"data":...}. The data[] array names the exact missing field (loc) and links the Pydantic error page.
+- id: jsonrpc-method-not-found
+  surface: a2a
+  jsonrpc_code: -32601
+  http_status: 200
+  message: Method not found
+  observed: true
+  triggers: [tools/list (MCP), any unknown method name]
+  remediation: The endpoint is A2A only; the methods it answers are message/send, message/stream, tasks/get, tasks/cancel, tasks/resubscribe and agent/getAuthenticatedExtendedCard.
+- id: a2a-task-not-found
+  surface: a2a
+  jsonrpc_code: -32001
+  http_status: 200
+  message: Task not found
+  observed: true
+  triggers: [tasks/get, tasks/cancel, tasks/resubscribe with any task id]
+  remediation: >-
+    The agent creates no queryable tasks - capabilities.stateTransitionHistory is false and third-party
+    logs describe a stateless reply per message - so there is no id a client could pass. Treat the exchange
+    as request/response on message/send alone.
+- id: a2a-streaming-not-supported
+  surface: a2a
+  jsonrpc_code: -32603
+  http_status: 200
+  message: Streaming is not supported by the agent
+  observed: true
+  triggers: [message/stream]
+  remediation: Use message/send; capabilities.streaming is false in the card.
+- id: a2a-authenticated-card-not-supported
+  surface: a2a
+  jsonrpc_code: -32603
+  http_status: 200
+  message: Authenticated card not supported
+  observed: true
+  triggers: [agent/getAuthenticatedExtendedCard]
+  remediation: The public card is the only card; there is nothing further to fetch with credentials.
+- id: upstream-model-authentication-error
+  surface: a2a
+  jsonrpc_code: -32603
+  http_status: 200
+  message: "Error code: 401 - {'type': 'error', 'error': {'type': 'authentication_error', 'message': 'API key is invalid.'}, 'request_id': None}"
+  observed: true
+  triggers: [a well-formed message/send]
+  remediation: >-
+    Nothing the caller can do. The agent's own credential to its model provider is invalid, so every
+    well-formed message fails after validation. a2aregistry.org recorded the same condition on 2026-09-19
+    (task_conformance AUTH_BACKEND failed) and notes the operator needs to fix their backend credentials; the
+    ai-village-agents logs show the same call succeeding on 2026-03-23. Retrying will not help until the
+    operator rotates the key; a client should surface the wrapped 401 text rather than retry.
+- id: method-not-allowed
+  surface: http
+  http_status: 405
+  message: Method Not Allowed
+  observed: true
+  endpoint: GET https://neva.dt-agent.co.uk/
+  remediation: 'POST application/json JSON-RPC to the root; the Allow header says POST.'
+- id: not-found
+  surface: http
+  http_status: 404
+  message: Not Found
+  observed: true
+  note: Every path other than / and the two agent-card paths returns this nine-byte text/plain body; it is the app's catch-all, so a 404 means "no such route".
+- id: rate-limited
+  surface: a2a
+  http_status: 429
+  observed: false
+  note: Never observed and undocumented; no rate-limit headers were returned on any probe (rate-limits/dt-agent-co-uk-rate-limits.yml).

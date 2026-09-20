@@ -1,0 +1,70 @@
+generated: '2026-09-19'
+method: searched
+probe: true
+source: https://neva.dt-agent.co.uk/.well-known/agent-card.json
+signals: {}
+note: >-
+  No horizontal regulatory signal is published. Neva has no website, legal page, documentation site or
+  trust page on either host: dt-agent.co.uk answers 404 to every path and neva.dt-agent.co.uk serves only
+  the agent card and the JSON-RPC root. The a2aregistry.org listing records homepage, license and contact
+  as null. There is no accessibility statement, subprocessor list, DPA, data-subject-request route,
+  data-residency statement, incident-notification SLA, transparency report, SBOM or support period
+  anywhere to harvest. An empty signals map is the measurement, not a gap in the probe. The only
+  regulation-adjacent text on either host is the apex robots.txt, which is Cloudflare's managed
+  content-signals preamble (EU DSM Directive 2019/790 Art. 4 reservation language) with no directive set,
+  so it neither grants nor restricts anything and is not recorded as a signal.
+probed_absent:
+- signal: sbom
+  urls:
+  - {url: 'https://dt-agent.co.uk/security/sbom', status: 404}
+  - {url: 'https://neva.dt-agent.co.uk/security/sbom', status: 404}
+  note: Never derived - search only.
+- signal: accessibility_conformance
+  urls:
+  - {url: 'https://dt-agent.co.uk/accessibility', status: 404}
+  - {url: 'https://dt-agent.co.uk/accessibility/vpat', status: 404}
+  - {url: 'https://neva.dt-agent.co.uk/accessibility', status: 404}
+- signal: subprocessors
+  urls:
+  - {url: 'https://dt-agent.co.uk/legal/subprocessors', status: 404}
+  - {url: 'https://neva.dt-agent.co.uk/legal/subprocessors', status: 404}
+- signal: data_subject_request
+  urls:
+  - {url: 'https://dt-agent.co.uk/privacy', status: 404}
+  - {url: 'https://dt-agent.co.uk/privacy/requests', status: 404}
+  - {url: 'https://dt-agent.co.uk/legal/dpa', status: 404}
+- signal: data_residency
+  urls:
+  - {url: 'https://dt-agent.co.uk/docs/data-residency', status: 404}
+  note: The agent host resolves to a Hetzner address in the CLOUD-NBG1 range (Nuremberg, DE) and the apex to Cloudflare, but the provider states nothing about residency and an inferred location is not a published commitment.
+- signal: incident_notification
+  urls:
+  - {url: 'https://dt-agent.co.uk/legal/dpa', status: 404}
+- signal: ai_transparency
+  urls:
+  - {url: 'https://dt-agent.co.uk/ai/transparency', status: 404}
+  - {url: 'https://neva.dt-agent.co.uk/ai/transparency', status: 404}
+  note: The agent is plainly LLM-backed (its failure mode is an upstream model-provider 401) but publishes no disclosure of that.
+- signal: training_data_summary
+  urls:
+  - {url: 'https://dt-agent.co.uk/ai/transparency', status: 404}
+- signal: transparency_report
+  urls:
+  - {url: 'https://dt-agent.co.uk/transparency', status: 404}
+  - {url: 'https://neva.dt-agent.co.uk/transparency', status: 404}
+- signal: notice_and_action
+  urls:
+  - {url: 'https://dt-agent.co.uk/legal/report-content', status: 404}
+- signal: global_privacy_control
+  urls:
+  - {url: 'https://dt-agent.co.uk/privacy', status: 404}
+  note: No privacy statement exists; honored is not set from a header probe.
+- signal: support_lifetime
+  urls:
+  - {url: 'https://dt-agent.co.uk/terms', status: 404}
+- signal: exit_assistance
+  urls:
+  - {url: 'https://dt-agent.co.uk/terms', status: 404}
+- signal: age_assurance
+  urls:
+  - {url: 'https://dt-agent.co.uk/terms', status: 404}

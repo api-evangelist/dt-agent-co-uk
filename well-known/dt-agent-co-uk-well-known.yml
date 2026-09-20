@@ -1,0 +1,62 @@
+generated: '2026-09-19'
+method: probed
+source: live GET of the named /.well-known/ path list on every host this record knows
+hit_count: 0
+note: >-
+  Every named discovery path returned 404 on neva.dt-agent.co.uk (a nine-byte text/plain "Not Found" from
+  the uvicorn origin) and on the apex dt-agent.co.uk (a text/plain "404 page not found" from behind
+  Cloudflare, the same body the apex returns for its own root). The negative-control path returned 404 on
+  both, so these are true absences and not a path-echoing or SPA catch-all. www.dt-agent.co.uk has no DNS
+  record. No WellKnown or SecurityTxt pointer is emitted - this file records an absence. The one
+  /.well-known/ document the agent host DOES serve is the A2A agent card (/.well-known/agent-card.json and
+  the legacy /.well-known/agent.json, both 200 application/json); it is recorded and graded in
+  a2a/dt-agent-co-uk-a2a.yml rather than counted here. The apex robots.txt (200) is Cloudflare's managed
+  content-signals preamble - comments only, no User-agent, Disallow or Content-Signal directive - so it
+  neither grants nor restricts anything and is not a consent or identity signal.
+hosts:
+- host: https://neva.dt-agent.co.uk
+  path_echo_control: passed
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/aauth-resource.json, status: 404}
+  - {path: /.well-known/apis.json, status: 404}
+  - {path: /apis.json, status: 404}
+  - {path: /llms.txt, status: 404}
+  - {path: /openapi.json, status: 404}
+  - {path: /docs, status: 404}
+  - {path: /mcp, status: 404}
+  - {path: /robots.txt, status: 404}
+  - {path: /.well-known/dt-agent-co-uk-negative-control-58df3261.json, status: 404, note: negative control}
+- host: https://dt-agent.co.uk
+  path_echo_control: passed
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/aauth-resource.json, status: 404}
+  - {path: /.well-known/apis.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+  - {path: /apis.json, status: 404}
+  - {path: /llms.txt, status: 404}
+  - {path: /openapi.json, status: 404}
+  - {path: /openapi.yaml, status: 404}
+  - {path: /swagger.json, status: 404}
+  - {path: /api-docs, status: 404}
+  - {path: /docs, status: 404}
+  - {path: /mcp, status: 404}
+  - {path: /sitemap.xml, status: 404}
+  - {path: /robots.txt, status: 200, note: 'Cloudflare managed content-signals preamble; comment lines only, no directives; not saved as a document'}
+  - {path: /.well-known/dt-agent-co-uk-negative-control-58df3261.json, status: 404, note: negative control}
+- host: https://www.dt-agent.co.uk
+  dns: none
+  note: No A/AAAA/CNAME record; every request fails to resolve.
+  documents: []

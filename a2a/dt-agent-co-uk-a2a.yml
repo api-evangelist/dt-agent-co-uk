@@ -1,0 +1,116 @@
+generated: '2026-09-19'
+method: probed
+source: https://neva.dt-agent.co.uk/.well-known/agent-card.json
+description: >-
+  A2A Agent Card observed on neva.dt-agent.co.uk, the host the provider's own card names as provider.url
+  and the host a2aregistry.org has listed for this agent since 2026-03-22. Grade is measured against the
+  A2A 1.0.0 AgentCard object: 'conformant' passes every structural check, 'near-conformant' is correctly
+  shaped but omits optional fields, 'flavored' fails a hard check. Provider-published by construction -
+  served from the provider's own host; nothing here is derived or generated.
+card:
+  file: dt-agent-co-uk-agent-card.json
+discovery:
+  path: /.well-known/agent-card.json
+  canonical: true
+  host: neva.dt-agent.co.uk
+  also_served_at:
+  - {url: 'https://neva.dt-agent.co.uk/.well-known/agent.json', status: 200, note: byte-identical body at the legacy pre-0.3 path; this is the URL a2aregistry.org records as wellKnownURI}
+  - {url: 'https://dt-agent.co.uk/.well-known/agent-card.json', status: 404, note: the registrable apex serves no card and no page at all}
+  - {url: 'https://dt-agent.co.uk/.well-known/agent.json', status: 404}
+  - {url: 'https://www.dt-agent.co.uk/.well-known/agent-card.json', status: null, note: www.dt-agent.co.uk has no DNS record}
+  note: >-
+    Served directly by a uvicorn origin (server: uvicorn, no Cloudflare headers) on a Hetzner address
+    (178.104.58.159, AS24940) with a Let's Encrypt certificate for neva.dt-agent.co.uk issued 2026-09-19,
+    content-type application/json, content-length 1178. The apex dt-agent.co.uk sits behind Cloudflare and
+    answers 404 to every path. Ownership is not in question: the card's provider.organization is "Neva" and
+    provider.url is https://neva.dt-agent.co.uk, the same host that serves it.
+x-evidence:
+  fetched: '2026-09-19'
+  url: https://neva.dt-agent.co.uk/.well-known/agent-card.json
+  http_status: 200
+  content_type: application/json
+  body_parses_as: JSON object with AgentCard shape (name, url, version, protocolVersion, capabilities, skills all present)
+  path_echo_control: passed (a random /.well-known/dt-agent-co-uk-negative-control-*.json returned 404 Not Found)
+  endpoint_probe:
+    url: https://neva.dt-agent.co.uk/
+    method: POST message/send
+    status: 200
+    result: >-
+      JSON-RPC error -32603 whose message wraps an upstream HTTP 401 - "Error code: 401 - {'type': 'error',
+      'error': {'type': 'authentication_error', 'message': 'API key is invalid.'}}". The A2A server itself
+      accepts the anonymous request and validates it (omitting messageId returns -32602 with Pydantic
+      detail); the failure is the agent's own credential to its model provider. a2aregistry.org recorded the
+      same condition the same day (maintainer_notes "returns an internal authentication error from a
+      downstream LLM provider (invalid API key on the agent's side)"; task_conformance category AUTH_BACKEND,
+      passed false, checked 2026-09-19T00:51Z) while still reporting the endpoint reachable.
+    other_methods:
+    - {method: tasks/get, result: '-32001 Task not found'}
+    - {method: tasks/cancel, result: '-32001 Task not found'}
+    - {method: tasks/resubscribe, result: '-32001 Task not found (returned as a text/event-stream data: frame)'}
+    - {method: message/stream, result: '-32603 Streaming is not supported by the agent'}
+    - {method: agent/getAuthenticatedExtendedCard, result: '-32603 Authenticated card not supported'}
+    - {method: tools/list (MCP), result: '-32601 Method not found - the endpoint is A2A only'}
+    - {method: GET /, result: 'HTTP 405 Method Not Allowed, Allow: POST'}
+  third_party_observation: >-
+    The ai-village-agents GitHub organisation logged a successful message/send exchange with this endpoint
+    on 2026-03-23 (agent-interaction-log/interactions/2026-03-23-13-04-neva-a2a-probe.md - the agent replied
+    "Hey there! I'm Neva - nice to meet you!") and a handshake on 2026-03-27 that reached the same upstream
+    401 boundary. Recorded as dated context for the lifecycle artifact, not as our own evidence.
+  registry_listing:
+    url: https://a2aregistry.org/api/agents?search=neva
+    id: d9333b3e-58bc-4270-9e48-71a8e357c9f3
+    created_at: '2026-03-22'
+    conformance: true
+    homepage: null
+    repository: null
+    pricing: null
+    contact: null
+agent_card:
+  name: Neva
+  url: https://neva.dt-agent.co.uk
+  version: 0.1.0
+  protocol_version: 0.3.0
+  preferred_transport: JSONRPC
+  provider:
+    organization: Neva
+    url: https://neva.dt-agent.co.uk
+  documentation_url: null
+  supports_authenticated_extended_card: not declared (agent/getAuthenticatedExtendedCard returns -32603 Authenticated card not supported)
+  security: not declared (no security or securitySchemes key in the card; the endpoint accepts anonymous requests)
+  capabilities:
+    streaming: false
+    push_notifications: false
+    state_transition_history: false
+  default_input_modes: [text]
+  default_output_modes: [text]
+  skill_count: 1
+  skills:
+  - id: build-with-us
+    name: Build Together
+    tags: [software-development, mvp, prototype, agent-services, integration, api, collaboration, build]
+    examples: ["I need an API built for my workflow", "Can you help me build an agent service?", "I'm looking for a development partner", "What can you build?", "Let's collaborate on something"]
+grade_basis: >-
+  Graded against the A2A 1.0.0 hard checks: capabilities is an OBJECT (pass), protocolVersion is present
+  (pass), skills is an ARRAY of one (pass). The optional fields that separate near-conformant from
+  conformant are all declared - preferredTransport (JSONRPC), defaultInputModes and defaultOutputModes.
+deviations:
+- field: protocolVersion
+  observed: 0.3.0
+  note: Declares A2A 0.3.0 rather than 1.0.0. A version statement, not a shape failure - recorded, not penalised.
+- field: defaultInputModes / defaultOutputModes
+  observed: ['text']
+  note: Bare "text" rather than a media type such as text/plain. A client matching on MIME types will not match it.
+- field: security / securitySchemes / supportsAuthenticatedExtendedCard / documentationUrl
+  observed: absent
+  note: Optional in 0.3.0 and absent here; the registry normalises them to [] / {} / null. The card documents nothing beyond itself.
+- field: url
+  observed: https://neva.dt-agent.co.uk
+  note: The A2A JSON-RPC endpoint is the host root - POST https://neva.dt-agent.co.uk/ - with no path segment; GET on it returns 405.
+- field: description
+  observed: identical text in the card description and skills[0].description
+  note: Cosmetic; the single skill and the agent share one paragraph of self-description.
+conformance:
+  spec: A2A 1.0.0
+  grade: conformant
+  protocol_version: 0.3.0
+  preferred_transport: JSONRPC

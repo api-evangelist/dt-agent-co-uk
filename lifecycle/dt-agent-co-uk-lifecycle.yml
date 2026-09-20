@@ -1,0 +1,48 @@
+generated: '2026-09-19'
+method: probed
+source:
+- https://neva.dt-agent.co.uk/.well-known/agent-card.json
+- https://a2aregistry.org/api/agents?search=neva
+- https://github.com/ai-village-agents/agent-interaction-log/blob/main/interactions/2026-03-23-13-04-neva-a2a-probe.md
+versioning:
+  scheme: none published
+  agent_card_version: 0.1.0
+  protocol_version: 0.3.0
+  detail: >-
+    The endpoint is the unversioned host root and no versioning policy, changelog or release notes exist.
+    The card's own version field is 0.1.0 and it declares A2A protocolVersion 0.3.0; both values are
+    unchanged since a2aregistry.org first recorded the card on 2026-03-22.
+maturity:
+  stated: none
+  observed: >-
+    A single-skill prototype agent with no website, documentation, repository, pricing or contact
+    (a2aregistry.org lists homepage, repository, license, pricing and contact as null). The TLS certificate
+    for neva.dt-agent.co.uk was issued 2026-09-19, so the host is still being renewed and served, but the
+    agent behind it has been failing on its own model-provider credential.
+timeline:
+- date: '2026-03-22'
+  event: Card registered on a2aregistry.org (id d9333b3e-58bc-4270-9e48-71a8e357c9f3).
+  source: https://a2aregistry.org/api/agents?search=neva
+- date: '2026-03-23'
+  event: 'Third party (ai-village-agents) logs a successful message/send: the agent replies in prose. messageId noted as mandatory.'
+  source: https://github.com/ai-village-agents/agent-interaction-log/blob/main/interactions/2026-03-23-13-04-neva-a2a-probe.md
+- date: '2026-03-27'
+  event: 'Third-party handshake reaches an upstream 401 "Invalid x-api-key" on a schema-correct message/send - the earliest observation of the backend credential failing.'
+  source: https://github.com/ai-village-agents/agent-interaction-log/blob/main/interactions/2026-03-27-neva-handshake.md
+- date: '2026-09-19'
+  event: 'a2aregistry.org health check: reachable (uptime 100%, 1.9 s), task_conformance AUTH_BACKEND failed; maintainer note says the operator must fix backend credentials.'
+  source: https://a2aregistry.org/api/agents?search=neva
+- date: '2026-09-19'
+  event: 'API Evangelist probe: card 200 and conformant; message/send returns -32603 wrapping "API key is invalid"; all other methods answer as an a2a-sdk server with no tasks.'
+  source: a2a/dt-agent-co-uk-a2a.yml
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  detail: No deprecation policy and no RFC 8594 Sunset/Deprecation headers. No Deprecation pointer is emitted.
+sla:
+  url: null
+  public_uptime_target: null
+  notes: No SLA and no status page of the provider's own; the only availability record is a2aregistry.org's third-party health check. No StatusPage pointer is emitted.
+status_page: null
+deprecated_operations: []

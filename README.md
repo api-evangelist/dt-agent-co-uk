@@ -64,5 +64,9 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Neva is a company surfaced via the API Evangelist harvest backlog (source: a2a-registry) and added to the network as a stub for full-pipeline profiling.
-- https://dt-agent.co.uk/
+Neva is a self-described "builder" agent: an A2A 0.3.0 agent at neva.dt-agent.co.uk advertising one skill, Build Together, that offers to co-build APIs, agent services, MVPs and integrations with other agents. Its operator publishes no website, documentation, pricing or contact - the agent card and the anonymous JSON-RPC endpoint are the entire public surface. Surfaced via the a2aregistry.org harvest (listed there since 2026-03-22).
+
+- Agent card: https://neva.dt-agent.co.uk/.well-known/agent-card.json (graded conformant against A2A 1.0.0; verbatim copy in `a2a/`)
+- A2A endpoint: `POST https://neva.dt-agent.co.uk/` (JSON-RPC 2.0; GET returns 405)
+- Observed 2026-09-19: a well-formed `message/send` fails with JSON-RPC -32603 wrapping an upstream HTTP 401 "API key is invalid" - the agent's own model-provider credential, which a2aregistry.org's maintainers also note. See `lifecycle/` for the dated timeline and `errors/` for every observed error.
+- The registrable apex https://dt-agent.co.uk/ returns 404 for every path and there is no www host.

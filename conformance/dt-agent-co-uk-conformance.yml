@@ -1,0 +1,60 @@
+generated: '2026-09-19'
+method: probed
+source: >-
+  https://neva.dt-agent.co.uk/.well-known/agent-card.json (fetched 2026-09-19), live JSON-RPC probes of
+  https://neva.dt-agent.co.uk/, the /.well-known/ sweep in well-known/dt-agent-co-uk-well-known.yml, and
+  the a2aregistry.org listing (https://a2aregistry.org/api/agents?search=neva).
+description: >-
+  Cross-cutting standards Neva's public surface conforms to, each with the evidence that decided it. There
+  is no OpenAPI, so nothing here is derived from a contract; every entry rests on a fetched document or an
+  observed response. No compliance program or certification is published, so no Compliance pointer is
+  emitted.
+standards:
+- id: a2a
+  conforms: true
+  version: 0.3.0 (declared)
+  evidence: >-
+    Agent card served at /.well-known/agent-card.json and /.well-known/agent.json with protocolVersion 0.3.0,
+    a capabilities object, a skills array and preferredTransport JSONRPC; the root answers the a2a-sdk method
+    set with A2A error codes (-32001 TaskNotFound). Graded conformant in a2a/dt-agent-co-uk-a2a.yml.
+    a2aregistry.org's own validator also records conformance true. Caveat: the card is conformant and the
+    transport is live, but a well-formed message/send fails on the agent's upstream credential, so the
+    agent does not currently complete a task (registry task_conformance AUTH_BACKEND, passed false).
+- id: json-rpc-2.0
+  conforms: true
+  evidence: >-
+    Every response carries jsonrpc "2.0", echoes the request id, and uses the reserved codes -32601 for an
+    unknown method, -32602 (with a data[] diagnostics list) for invalid params and -32603 for internal
+    errors, plus the A2A-defined -32001.
+- id: rfc8615-well-known
+  conforms: true
+  evidence: The agent card is served at the RFC 8615 /.well-known/ path (both the canonical and legacy names); no other well-known document is served (well-known/dt-agent-co-uk-well-known.yml).
+- id: mcp
+  conforms: false
+  evidence: 'POST tools/list to https://neva.dt-agent.co.uk/ returns JSON-RPC -32601 Method not found; /mcp returns 404 on both hosts. The endpoint is A2A only.'
+- id: oauth2
+  conforms: false
+  evidence: The card declares no securitySchemes; /.well-known/oauth-authorization-server and /.well-known/oauth-protected-resource return 404 on both hosts. The surface is anonymous.
+- id: oidc
+  conforms: false
+  evidence: /.well-known/openid-configuration returns 404 on neva.dt-agent.co.uk and dt-agent.co.uk.
+- id: rfc9457
+  conforms: false
+  evidence: Errors are JSON-RPC error objects over HTTP 200; unknown paths return text/plain "Not Found". No application/problem+json anywhere.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt returns 404 on both hosts.
+- id: rfc8594-sunset
+  conforms: false
+  evidence: No Deprecation or Sunset headers observed and no deprecation policy published (lifecycle/dt-agent-co-uk-lifecycle.yml).
+- id: idempotency
+  conforms: false
+  evidence: No replay mechanism is documented; the surface keeps no state to protect (conventions/dt-agent-co-uk-conventions.yml records coverage na).
+- id: hsts
+  conforms: false
+  evidence: No Strict-Transport-Security header on either host (security/dt-agent-co-uk-domain-security.yml).
+domain_standard: none
+domain_standard_note: >-
+  No domain standard is declared in the contract surface - the agent offers software-development
+  collaboration, a market with no interchange standard to conform to. REWARD-ONLY - the absence is not
+  penalised and nothing is invented to fill the slot.

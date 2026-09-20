@@ -1,0 +1,29 @@
+generated: '2026-09-19'
+method: probed
+source: >-
+  Response headers observed on https://neva.dt-agent.co.uk/ (message/send, tasks/get, message/stream,
+  tools/list and GET) and on https://neva.dt-agent.co.uk/.well-known/agent-card.json on 2026-09-19.
+limit_count: 0
+description: >-
+  Neva publishes no rate limits and returns no rate-limit headers on any probed response. This is an honest
+  zero measured from live responses. There is no documentation in which a limit could be published; the
+  agent host is a bare uvicorn origin (no Cloudflare or proxy headers), so there is not even an inferred
+  edge policy.
+limits: []
+response_headers:
+  observed: []
+  checked_for: [RateLimit-Limit, RateLimit-Remaining, RateLimit-Reset, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After]
+  note: >-
+    Every response carried exactly content-type, content-length, date, server (uvicorn) and alt-svc. None
+    of the seven headers appeared.
+exhaustion_status: null
+enforcement:
+  documented: false
+  inferred: none visible; direct uvicorn origin on a Hetzner address with no reverse proxy headers.
+x-evidence:
+  fetched: '2026-09-19'
+  probes:
+  - {url: 'https://neva.dt-agent.co.uk/', method: POST message/send, status: 200, rate_limit_headers: none}
+  - {url: 'https://neva.dt-agent.co.uk/', method: POST tasks/get, status: 200, rate_limit_headers: none}
+  - {url: 'https://neva.dt-agent.co.uk/', method: GET, status: 405, rate_limit_headers: none}
+  - {url: 'https://neva.dt-agent.co.uk/.well-known/agent-card.json', method: GET, status: 200, rate_limit_headers: none}

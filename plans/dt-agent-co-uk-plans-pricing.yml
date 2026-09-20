@@ -1,0 +1,22 @@
+generated: '2026-09-19'
+method: searched
+source: https://a2aregistry.org/api/agents?search=neva
+sources:
+- https://neva.dt-agent.co.uk/.well-known/agent-card.json
+- https://a2aregistry.org/api/agents?search=neva
+- https://dt-agent.co.uk/pricing
+- https://neva.dt-agent.co.uk/pricing
+note: >-
+  Neva publishes no plans and no pricing of any kind. The agent card carries no pricing or documentationUrl,
+  the a2aregistry.org listing records pricing null, /pricing returns 404 on both hosts, and there is no
+  website on which a price could appear. The endpoint is anonymous and free to call as far as anything
+  states. plan_count 0 is the measurement, not an omission.
+plan_count: 0
+currency: null
+plans: []
+x-evidence:
+  fetched: '2026-09-19'
+  probes:
+  - {url: 'https://dt-agent.co.uk/pricing', status: 404}
+  - {url: 'https://neva.dt-agent.co.uk/pricing', status: 404}
+  - {url: 'https://a2aregistry.org/api/agents?search=neva', status: 200, field: 'pricing: null'}

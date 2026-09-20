@@ -1,0 +1,107 @@
+generated: '2026-09-19'
+method: probed
+source: >-
+  https://neva.dt-agent.co.uk/.well-known/agent-card.json and live JSON-RPC probes of
+  https://neva.dt-agent.co.uk/ on 2026-09-19. There is no OpenAPI, documentation or API reference; every
+  convention below is observed or read from the card.
+description: >-
+  How Neva's public agent surface behaves across calls: an anonymous A2A 0.3.0 JSON-RPC endpoint at the
+  host root that implements the a2a-sdk method set, of which only message/send does anything - and, as of
+  2026-09-19, that call fails after validation because the agent's own model-provider key is invalid.
+
+base_url: https://neva.dt-agent.co.uk/
+api_style: A2A 0.3.0 over JSON-RPC 2.0 (HTTPS POST to the host root, application/json)
+surfaces:
+- name: A2A endpoint
+  url: https://neva.dt-agent.co.uk/
+  methods_implemented: [message/send, tasks/get, tasks/cancel, tasks/resubscribe, message/stream, agent/getAuthenticatedExtendedCard]
+  methods_functional:
+  - message/send (validation only - the model call behind it fails with an upstream 401)
+  methods_refused: [tools/list (-32601), any GET (405)]
+  gated: false
+  note: >-
+    server: uvicorn with Pydantic 2.12 validation errors - the shape of the Python a2a-sdk reference server.
+    tasks/* answer -32001 Task not found for every id because the agent keeps no tasks; message/stream
+    answers -32603 Streaming is not supported.
+
+authentication:
+  scheme: none (no security or securitySchemes in the card; anonymous requests are validated and answered)
+  detail: authentication/dt-agent-co-uk-authentication.yml
+
+message_shape:
+  request: >-
+    params.message is a full A2A Message: role "user", a client-supplied messageId (REQUIRED - omitting it
+    returns -32602 with loc [params, message, messageId]), and parts[] of discriminated-union parts; a text
+    part is {"kind":"text","text":"..."} - the server rejects a part carrying only mimeType/content.
+  response: >-
+    When the backend worked (third-party logs, 2026-03-23) the result was a Message {kind: "message",
+    messageId, role: "agent", parts: [{kind: "text", text}]} - a direct reply, not a Task. The card's
+    input/output modes are "text".
+  skill_routing: >-
+    One skill, build-with-us. There is no skill selector in the request; every message goes to the same
+    conversational agent, which (per the ai-village logs) repeats its introduction and asks what you are
+    building.
+
+idempotency:
+  supported: false
+  coverage: na
+  mechanism: null
+  detail: >-
+    The surface has no write in the resource sense - message/send creates no task, record or side effect
+    the provider stores (stateTransitionHistory false; tasks/get finds nothing; the agent is described by
+    its correspondents as stateless with no memory between messages). The A2A messageId is mandatory but
+    nothing documents it as a dedupe key, so a retried message simply produces another reply. Recorded as
+    na rather than none because there is nothing to double-fire.
+
+reversibility:
+  grade: na
+  write_surface: []
+  reversal_operations:
+  - tasks/cancel (implemented, but always -32001 Task not found because no task exists)
+  window: null
+  detail: >-
+    Nothing a caller does through this endpoint changes state the provider keeps, so there is nothing to
+    reverse. tasks/cancel exists in the method set and answers -32001 for every id. If the operator later
+    makes the agent stateful or gives it tools with effects, this becomes a real dimension; it is not one
+    today.
+
+dry_run_mode:
+  supported: na
+  detail: No effects to rehearse; the agent is conversational.
+
+pagination:
+  style: none
+  detail: No list surface.
+
+request_id_tracing:
+  mechanism: JSON-RPC id echoed in every response
+  headers: none (no request-id response header; the response carries only content-type, content-length, date, server, alt-svc)
+
+versioning:
+  scheme: none
+  detail: lifecycle/dt-agent-co-uk-lifecycle.yml
+
+error_envelope:
+  a2a: '{jsonrpc, id, error: {code, message, data?}} over HTTP 200; data is a Pydantic diagnostics list on -32602'
+  detail: errors/dt-agent-co-uk-problem-types.yml
+
+rate_limit_signaling:
+  headers: none observed
+  detail: rate-limits/dt-agent-co-uk-rate-limits.yml
+
+content_types:
+  request: application/json
+  response: application/json (text/event-stream for tasks/resubscribe)
+  input_modes: [text]
+  output_modes: [text]
+  note: A non-JSON POST body still returns HTTP 200 with a JSON-RPC parse error envelope.
+
+security_headers_observed:
+  strict-transport-security: absent
+  content-security-policy: absent
+  x-content-type-options: absent on the agent host (present, nosniff, on the Cloudflare-fronted apex)
+  note: The agent host is a bare uvicorn origin with no reverse-proxy headers at all.
+
+data_handling:
+  statement: null
+  note: No privacy, terms or data-handling statement is published on either host (regulatory/dt-agent-co-uk-regulatory-posture.yml).

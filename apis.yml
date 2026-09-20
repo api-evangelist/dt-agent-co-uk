@@ -1,18 +1,69 @@
 aid: dt-agent-co-uk
 name: Neva
-description: 'Neva is a company surfaced via the API Evangelist harvest backlog (source: a2a-registry)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Neva is a self-described "builder" agent: an A2A 0.3.0 agent at neva.dt-agent.co.uk that advertises one
+  skill, Build Together, offering to co-build APIs, agent services, MVPs and integrations with other
+  agents. Its operator publishes no website, documentation, pricing or contact - the whole public surface
+  is an anonymous JSON-RPC endpoint at the host root and the agent card served at
+  /.well-known/agent-card.json (and the legacy /.well-known/agent.json), listed on a2aregistry.org since
+  2026-03-22. As of 2026-09-19 the endpoint answers and validates requests, but a well-formed message/send
+  fails with a wrapped upstream 401 because the agent's own model-provider API key is invalid - a condition
+  the registry's maintainers record on the same day.
 url: https://raw.githubusercontent.com/api-evangelist/dt-agent-co-uk/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:a2a-registry
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-09-19 (local-v3; was a2a-registry harvest stub)
 specificationVersion: '0.20'
 created: '2026-09-19'
 modified: '2026-09-19'
 tags:
-- Company
-apis: []
+- A2A
+- AI Agents
+- Agent Services
+- Software Development
+- JSON-RPC
+- Prototyping
+- Integration
+- Collaboration
+apis:
+- aid: dt-agent-co-uk:neva-a2a-agent
+  name: Neva A2A Agent
+  description: >-
+    Neva's agent-to-agent surface: an anonymous A2A 0.3.0 JSON-RPC endpoint at the root of
+    neva.dt-agent.co.uk (POST only; GET returns 405) implementing the a2a-sdk method set. message/send takes
+    a full Message with a mandatory client-supplied messageId and {"kind":"text","text":...} parts; there is
+    no streaming, no push notifications, no queryable tasks and no authenticated extended card. One skill,
+    build-with-us. On 2026-09-19 a well-formed message/send returned JSON-RPC -32603 wrapping an upstream
+    HTTP 401 "API key is invalid" - the agent's own model-provider credential - so the agent validates but
+    does not currently reply. No OpenAPI, documentation or SDK.
+  humanURL: https://neva.dt-agent.co.uk/.well-known/agent-card.json
+  baseURL: https://neva.dt-agent.co.uk/
+  tags:
+  - A2A
+  - AI Agents
+  - JSON-RPC
+  - Agent Services
+  properties:
+  - type: AgentCard
+    url: a2a/dt-agent-co-uk-a2a.yml
+    name: A2A Agent Card (graded, verbatim body alongside)
+  - type: Authentication
+    url: authentication/dt-agent-co-uk-authentication.yml
+  - type: Conventions
+    url: conventions/dt-agent-co-uk-conventions.yml
+  - type: ErrorCatalog
+    url: errors/dt-agent-co-uk-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/dt-agent-co-uk-rate-limits.yml
+  - type: Conformance
+    url: conformance/dt-agent-co-uk-conformance.yml
+  - type: Lifecycle
+    url: lifecycle/dt-agent-co-uk-lifecycle.yml
+  overlays: []
+  x-humanurl-note: >-
+    The provider publishes no human-readable page; the agent card is the only document that describes the
+    API, so it stands in as humanURL rather than a URL that returns 404 (the apex) or 405 (the endpoint).
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +71,42 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://dt-agent.co.uk/
+  url: https://neva.dt-agent.co.uk/
+  name: Provider URL declared in the agent card (provider.url); answers 405 to GET - it is the JSON-RPC endpoint, and no HTML site exists
+- type: AgentCard
+  url: a2a/dt-agent-co-uk-a2a.yml
+  name: A2A Agent Card
+- type: LLMsTxt
+  url: llms/dt-agent-co-uk-llms.txt
+- type: Authentication
+  url: authentication/dt-agent-co-uk-authentication.yml
+- type: Conventions
+  url: conventions/dt-agent-co-uk-conventions.yml
+- type: ErrorCatalog
+  url: errors/dt-agent-co-uk-problem-types.yml
+- type: RateLimits
+  url: rate-limits/dt-agent-co-uk-rate-limits.yml
+- type: Plans
+  url: plans/dt-agent-co-uk-plans-pricing.yml
+- type: Conformance
+  url: conformance/dt-agent-co-uk-conformance.yml
+- type: Lifecycle
+  url: lifecycle/dt-agent-co-uk-lifecycle.yml
+- type: DomainSecurity
+  url: security/dt-agent-co-uk-domain-security.yml
+x-website:
+  replaced: https://dt-agent.co.uk/
+  status_of_replaced: 404
+  current: https://neva.dt-agent.co.uk/
+  status_of_current: 405
+  basis: provider.url declared in the agent card; also the a2aregistry.org listing url
+  note: 'The harvest stub pointed Website at https://dt-agent.co.uk/, which returns a text/plain 404 for its root
+    and every other path (confirmed 2026-09-19); www.dt-agent.co.uk has no DNS record. The pointer was replaced
+    with the URL the provider declares for itself in its own agent card (provider.url), the same URL a2aregistry.org
+    lists. It is the agent endpoint rather than a web page - GET answers 405 Allow: POST - but it is the provider''s
+    own, self-declared address and the only live host it operates. Not constructed from the slug.'
+x-enrichment:
+  date: '2026-09-19'
+  status: enriched
+  artifacts_added: 13
+  pass: local-v3

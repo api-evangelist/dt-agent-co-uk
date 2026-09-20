@@ -1,0 +1,37 @@
+generated: '2026-09-19'
+method: probed
+source:
+- https://neva.dt-agent.co.uk/.well-known/agent-card.json
+- https://neva.dt-agent.co.uk/
+docs: null
+description: >-
+  Authentication profile for Neva's one published surface, the A2A JSON-RPC endpoint at the root of
+  neva.dt-agent.co.uk. There is no OpenAPI and no documentation, so this is read from the agent card (which
+  declares no security at all) and confirmed by live anonymous probes on 2026-09-19.
+summary:
+  types: [none]
+schemes:
+- name: anonymous
+  type: none
+  surface: A2A endpoint https://neva.dt-agent.co.uk/
+  description: >-
+    The card carries no security, securitySchemes or supportsAuthenticatedExtendedCard key, and the server
+    accepts unauthenticated JSON-RPC: tasks/get answered -32001 Task not found and a malformed message/send
+    answered -32602 with Pydantic field detail, both without any credential. A well-formed message/send
+    then fails with -32603 wrapping an upstream 401 "API key is invalid" - that is the agent's own credential
+    to its model provider, not a requirement on the caller; no header, token or key is asked of the client
+    at any point. agent/getAuthenticatedExtendedCard returns -32603 "Authenticated card not supported".
+  sources: [https://neva.dt-agent.co.uk/.well-known/agent-card.json]
+  probes:
+  - {url: 'https://neva.dt-agent.co.uk/', method: POST tasks/get, status: 200, credentials: none, body: '{"error":{"code":-32001,"message":"Task not found"}}'}
+  - {url: 'https://neva.dt-agent.co.uk/', method: POST message/send (no messageId), status: 200, credentials: none, body: '-32602 Invalid parameters, data[0].loc [params, message, messageId]'}
+  - {url: 'https://neva.dt-agent.co.uk/', method: POST message/send (well-formed), status: 200, credentials: none, body: '-32603 Error code: 401 ... authentication_error ... API key is invalid. (upstream, not caller)'}
+oauth: false
+openid_connect: false
+api_keys: false
+notes: >-
+  No OAuth 2.0, OIDC or API-key scheme anywhere; /.well-known/oauth-authorization-server,
+  /.well-known/oauth-protected-resource and /.well-known/openid-configuration all 404 on neva.dt-agent.co.uk
+  and dt-agent.co.uk (well-known/dt-agent-co-uk-well-known.yml). No scopes/ artifact is written because there
+  is no scope surface. The derive-authentication.py baseline was not run because there is no OpenAPI for it
+  to read.
