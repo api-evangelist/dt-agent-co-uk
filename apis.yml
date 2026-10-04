@@ -38,7 +38,6 @@ apis:
     HTTP 401 "API key is invalid" - the agent's own model-provider credential - so the agent validates but
     does not currently reply. No OpenAPI, documentation or SDK.
   humanURL: https://neva.dt-agent.co.uk/.well-known/agent-card.json
-  baseURL: https://neva.dt-agent.co.uk/
   tags:
   - A2A
   - AI Agents
@@ -110,3 +109,10 @@ x-enrichment:
   status: enriched
   artifacts_added: 13
   pass: local-v3
+x-a2a:
+  verified: true
+  probed: '2026-09-26'
+  url: "https://neva.dt-agent.co.uk/.well-known/agent-card.json"
+  grade: "conformant"
+  protocol_version: "0.3.0"
+  control: 404
