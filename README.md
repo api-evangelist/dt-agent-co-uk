@@ -64,9 +64,96 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Neva is a self-described "builder" agent: an A2A 0.3.0 agent at neva.dt-agent.co.uk advertising one skill, Build Together, that offers to co-build APIs, agent services, MVPs and integrations with other agents. Its operator publishes no website, documentation, pricing or contact - the agent card and the anonymous JSON-RPC endpoint are the entire public surface. Surfaced via the a2aregistry.org harvest (listed there since 2026-03-22).
+Neva is a self-described "builder" agent: an A2A 0.3.0 agent at neva.dt-agent.co.uk that advertises one skill, Build Together, offering to co-build APIs, agent services, MVPs and integrations with other agents. Its operator publishes no website, documentation, pricing or contact - the whole public surface is an anonymous JSON-RPC endpoint at the host root and the agent card served at /.well-known/agent-card.json (and the legacy /.well-known/agent.json), listed on a2aregistry.org since 2026-03-22. As of 2026-09-19 the endpoint answers and validates requests, but a well-formed message/send fails with a wrapped upstream 401 because the agent's own model-provider API key is invalid - a condition the registry's maintainers record on the same day.
 
-- Agent card: https://neva.dt-agent.co.uk/.well-known/agent-card.json (graded conformant against A2A 1.0.0; verbatim copy in `a2a/`)
-- A2A endpoint: `POST https://neva.dt-agent.co.uk/` (JSON-RPC 2.0; GET returns 405)
-- Observed 2026-09-19: a well-formed `message/send` fails with JSON-RPC -32603 wrapping an upstream HTTP 401 "API key is invalid" - the agent's own model-provider credential, which a2aregistry.org's maintainers also note. See `lifecycle/` for the dated timeline and `errors/` for every observed error.
-- The registrable apex https://dt-agent.co.uk/ returns 404 for every path and there is no www host.
+**Areas:** A2A · AI Agents · Agent Services · Software Development · JSON-RPC · Prototyping · Integration · Collaboration
+
+## Neva on APIs.io
+
+Everything profiled for Neva is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/dt-agent-co-uk/](https://apis.io/providers/dt-agent-co-uk/)** — or go straight to one of the APIs or properties below.
+
+### APIs (1)
+
+- [Neva A2A Agent](https://apis.io/apis/dt-agent-co-uk/neva-a2a-agent/) — Neva's agent-to-agent surface: an anonymous A2A 0.3.0 JSON-RPC endpoint at the root of neva.dt-agent.co.uk (POST only; GET returns 405) implementing the…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Dt Agent Co Uk Authentication](https://apis.io/security/dt-agent-co-uk/dt-agent-co-uk-authentication/)
+- [Dt Agent Co Uk Domain Security](https://apis.io/security/dt-agent-co-uk/dt-agent-co-uk-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Dt Agent Co Uk Plans Pricing](https://apis.io/plans/dt-agent-co-uk/dt-agent-co-uk-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Dt Agent Co Uk Rate Limits](https://apis.io/rate-limits/dt-agent-co-uk/dt-agent-co-uk-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://neva.dt-agent.co.uk/)
+
+## API Evangelist rating
+
+**Kin Score 10.2** — minimal · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 53.6 |
+| Contract quality | 0.0 |
+| Contract governance | 18.2 |
+| Operational transparency | 0.0 |
+| Developer ergonomics | 11.9 |
+| Access clarity | 0.0 |
+
+**Agent readiness 13.7** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | — |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | conformant |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 16.7** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/dt-agent-co-uk/](https://apis.io/providers/dt-agent-co-uk/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Neva: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/dt-agent-co-uk/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
